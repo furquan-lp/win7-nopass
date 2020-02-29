@@ -8,7 +8,7 @@
 source def_color.sh # load color constants
 
 std_in=""
-count=0
+count=0 # global counter
 
 LOOKUP_PATH_1="/dev/sda2" # <-- is the lookup path by default
 LOOKUP_PATH_2="/dev/sda3"
@@ -129,27 +129,20 @@ Revised Nov 22 2018 by Furquan Ahmad
 "
 
 check_root
-#check_chntpw
+check_chntpw
 
 echo "Available lookup-paths are:"
 count=1
+_check_sys32=false
 for path in $LOOKUP_PATH_1 $LOOKUP_PATH_2 $LOOKUP_PATH_3 $LOOKUP_PATH_X; do
 	echo -e "$count.${WHITE}$path${NC}"
-	if check_system32 $path; then
-		break
+	if $_check_sys32; then
+		continue
+	elif check_system32 $path; then
+		_check_sys32=true
 	fi
 	count=$((count+1))
 done
-
-#echo -e "Available lookup-paths are:
-#1. ${WHITE}$LOOKUP_PATH_1${NC}"
-#check_system32 $LOOKUP_PATH_1
-#echo -e "2. ${WHITE}$LOOKUP_PATH_2${NC}"
-#check_system32 $LOOKUP_PATH_2
-#echo -e "3. ${WHITE}$LOOKUP_PATH_3${NC}"
-#check_system32 $LOOKUP_PATH_3
-#echo -e "4. ${WHITE}$LOOKUP_PATH_X${NC}"
-#check_system32 $LOOKUP_PATH_X
 
 if [ "$?" = 1 ]; then
 	readln "System32 was not found in any of the lookup devices. Enter one manually? (Y/N) "
