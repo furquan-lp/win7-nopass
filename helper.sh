@@ -4,8 +4,6 @@
 # Will run under any Linux/Unix(s) running any kind of bash
 # compatible shell.
 
-# Last Edited: [2018-11-22 2101]
-
 # Global Variables/Constants:
 source def_color.sh # load color constants
 
@@ -15,9 +13,7 @@ LOOKUP_PATH_1="/dev/sda2" # <-- is the lookup path by default
 LOOKUP_PATH_2="/dev/sda3"
 LOOKUP_PATH_3="/dev/sda4"
 LOOKUP_PATH_X="/dev/sda1"
-
 LOOKUP_DEFAULT=$LOOKUP_PATH_1 # stores the default lookup path
-
 MOUNT_DEFAULT="/mnt/sda"
 
 # Functions:
@@ -61,54 +57,20 @@ sys32_check() {
 run_diagnosis() {
 	echo -e "${CYAN}Running detailed diagnosis...${NC}
 "
-	echo -e "Running mount commands...
+	for path in $LOOKUP_PATH_1 $LOOKUP_PATH_2 $LOOKUP_PATH_3 $LOOKUP_PATH_X; do
+		echo -e "Running mount commands...
 Mounting at $MOUNT_DEFAULT...
-Lookup path $LOOKUP_PATH_1"
-	mkdir $MOUNT_DEFAULT
-	mount $LOOKUP_PATH_1 $MOUNT_DEFAULT
-	echo "Listing directory..."
-	ls --color=auto $MOUNT_DEFAULT
-	echo "Dumping hierarchy..."
-	echo -e "\n\t\t---$LOOKUP_PATH_1---\n" > HIERDUMP
-	find $MOUNT_DEFAULT -maxdepth 2 -type d -not -path '*/\.*' >> HIERDUMP
-	echo -e "Unmount $LOOKUP_PATH_1..."
-	umount "$LOOKUP_PATH_1"
-	
-	echo -e "
-Mounting at $MOUNT_DEFAULT...
-Lookup path $LOOKUP_PATH_2"
-	mount $LOOKUP_PATH_2 $MOUNT_DEFAULT
-	echo "Listing directory..."
-	ls $MOUNT_DEFAULT
-	echo "Dumping hierarchy..."
-	echo -e "\n\t\t---$LOOKUP_PATH_2---\n" >> HIERDUMP
-	find $MOUNT_DEFAULT -maxdepth 2 -type d -not -path '*/\.*' >> HIERDUMP
-	echo -e "Unmount $LOOKUP_PATH_2.."
-	umount "$LOOKUP_PATH_2"
-	
-	echo -e "
-Mounting at $MOUNT_DEFAULT...
-Lookup path $LOOKUP_PATH_3"
-	mount $LOOKUP_PATH_3 $MOUNT_DEFAULT
-	echo "Listing directory..."
-	ls $MOUNT_DEFAULT
-	echo "Dumping hierarchy..."
-	echo -e "\n\t\t---$LOOKUP_PATH_3---\n" >> HIERDUMP
-	find $MOUNT_DEFAULT -maxdepth 2 -type d -not -path '*/\.*' >> HIERDUMP
-	echo -e "Unmount $LOOKUP_PATH_3.."
-	umount "$LOOKUP_PATH_3"
-	
-	echo -e "
-Mounting at $MOUNT_DEFAULT...
-Lookup path $LOOKUP_PATH_X"
-	mount $LOOKUP_PATH_X $MOUNT_DEFAULT
-	echo "Listing directory..."
-	ls $MOUNT_DEFAULT
-	echo "Dumping hierarchy..."
-	echo -e "\n\t\t---$LOOKUP_PATH_X---\n" >> HIERDUMP
-	find $MOUNT_DEFAULT -maxdepth 2 -type d -not -path '*/\.*' >> HIERDUMP
-	echo -e "Unmount $LOOKUP_PATH_X.."
-	umount "$LOOKUP_PATH_X"
+Lookup path $path"
+		mkdir $MOUNT_DEFAULT
+		mount $path $MOUNT_DEFAULT
+		echo "Listing directory..."
+		ls --color=auto $MOUNT_DEFAULT
+		echo "Dumping hierarchy..."
+		echo -e "\n\t\t---$path---\n" > HIERDUMP
+		find $MOUNT_DEFAULT -maxdepth 2 -type d -not -path '*/\.*' >> HIERDUMP
+		echo -e "Unmount $path..."
+		umount "$path"
+	done
 	
 	echo "Finishing up..."
 	rmdir "$MOUNT_DEFAULT"
