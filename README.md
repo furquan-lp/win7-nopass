@@ -1,7 +1,7 @@
 # sam-helper
 This is a simple interactive script to help guide the user in Windows password-recovery using `chntpw`.
 
-Originally created in 2016 for my school project, this script (then named `cmd-explot`) used a loophole in Windows password prompts that allowed `cmd.exe` to run on the password screen and thus making the password easily recoverable with a few commands. A few years later I modified the script to use chntpw instead and used the interactive features to make the script easier to use for a relatively uninformed user than just using `chntpw`.
+Originally created in 2016 for my school project, this script (then named `cmd-explot`) used a loophole in Windows password prompts that allowed `cmd.exe` to run on the password screen and thus making the password easily recoverable with a few commands. A few years later I modified the script to use chntpw instead and used the interactive features to make the script easier to use for a relatively uninformed user than just using `chntpw`. A notable result of this script being interactive is that the user gets to choose the exact target device and it works on _dual-boot_ systems too.
 
 Since this script is very old, the code quality isn't exactly stellar but it should be readable enough. Unlike its previous incarnations, this script shouldn't be able to cause _any_ damage to the target system unless it's a bug in `chntpw` itself.
 
