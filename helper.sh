@@ -39,7 +39,7 @@ root_check() {
 	fi
 }
 
-checkSystem32() {
+sys32_check() {
 	echo -e "\tRunning mount commands..."
 	mkdir $MOUNT_DEFAULT
 	mount "$1" $MOUNT_DEFAULT
@@ -58,7 +58,7 @@ checkSystem32() {
 	fi
 }
 
-runLookupDiagnosis() {
+run_diagnosis() {
 	echo -e "${CYAN}Running detailed diagnosis...${NC}
 "
 	echo -e "Running mount commands...
@@ -118,12 +118,12 @@ Lookup path $LOOKUP_PATH_X"
 
 
 # Errors
-system32NotFound() {
+err_sys32_missing() {
 	echo -e "${RED}System32 not found on system${NC}. Stop."
 	readln "
 Do you wish to see a detailed diagnosis? (Y/N) "
 	if [ "$std_in" = "Y" ]; then
-		runLookupDiagnosis
+		run_diagnosis
 	fi
 	echo -e "\nExitting...
 "
@@ -151,24 +151,24 @@ root_check
 
 echo -e "Available lookup-paths are:
 1. ${WHITE}$LOOKUP_PATH_1${NC}"
-checkSystem32 $LOOKUP_PATH_1
+sys32_check $LOOKUP_PATH_1
 echo -e "2. ${WHITE}$LOOKUP_PATH_2${NC}"
-checkSystem32 $LOOKUP_PATH_2
+sys32_check $LOOKUP_PATH_2
 echo -e "3. ${WHITE}$LOOKUP_PATH_3${NC}"
-checkSystem32 $LOOKUP_PATH_3
+sys32_check $LOOKUP_PATH_3
 echo -e "4. ${WHITE}$LOOKUP_PATH_X${NC}"
-checkSystem32 $LOOKUP_PATH_X
+sys32_check $LOOKUP_PATH_X
 
 if [ "$?" = 1 ]; then
 	readln "System32 was not found in any of the lookup devices. Enter one manually? (Y/N) "
 	if [ "$std_in" = "Y" ]; then
 		readln "Enter the device path (/dev/xxx): "
-		checkSystem32 $std_in
+		sys32_check $std_in
 		if [ "$?" = 1 ]; then
-			system32NotFound
+			err_sys32_missing
 		fi
 	else
-		system32NotFound
+		err_sys32_missing
 	fi
 fi
 
