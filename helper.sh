@@ -93,14 +93,21 @@ Do you wish to see a detailed diagnosis? (Y/N) "
 }
 
 # Main code
+readln '
++----------------------------------------------------------------+
+|WARNING: Improper usage of this script may damage your system or|
+|render it unusable. Proceed with caution. The author(s) of this |
+|script will NOT be liable for any damages incurred through the  |
+|usage of this script.                                           |
+|                                                                |
+|Are you sure you want to run this script?                       |
+|                     [YES]             [NO]                     |
++----------------------------------------------------------------+
 
-whiptail --yesno "WARNING: Improper usage of this script may damage your system or render it unusable. Proceed with caution.
-The author(s) of this script will NOT be liable for any damages incurred through the usage of this script.
+> '
 
-Are you sure you want to run this script?" 10 110
-
-if [ $? -eq 1 ]; then
-	exit
+if [[ ( "$std_in" != "YES" ) || ( "$std_in" != "yes" ) ]]; then
+	terminate
 fi
 
 clear
