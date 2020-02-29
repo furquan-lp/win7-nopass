@@ -135,7 +135,9 @@ echo "Available lookup-paths are:"
 count=1
 for path in $LOOKUP_PATH_1 $LOOKUP_PATH_2 $LOOKUP_PATH_3 $LOOKUP_PATH_X; do
 	echo -e "$count.${WHITE}$path${NC}"
-	check_system32 $path
+	if check_system32 $path; then
+		break
+	fi
 	count=$((count+1))
 done
 
