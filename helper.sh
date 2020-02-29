@@ -49,6 +49,9 @@ check_chntpw() {
 }
 
 check_system32() {
+	if [ -d "$MOUNT_DEFAULT" ]; then
+		return 0
+	fi
 	echo -e "\tRunning mount commands..."
 	mkdir $MOUNT_DEFAULT
 	mount "$1" $MOUNT_DEFAULT
@@ -133,12 +136,9 @@ check_chntpw
 
 echo "Available lookup-paths are:"
 count=1
-_check_sys32=false
 for path in $LOOKUP_PATH_1 $LOOKUP_PATH_2 $LOOKUP_PATH_3 $LOOKUP_PATH_X; do
 	echo -e "$count.${WHITE}$path${NC}"
-	if $_check_sys32; then
-		continue
-	elif check_system32 $path; then
+	if check_system32 $path; then
 		_check_sys32=true
 	fi
 	count=$((count+1))
