@@ -40,6 +40,13 @@ root_check() {
 	fi
 }
 
+chntpw_check() {
+	if [ ! $(command -v chntpw) ]; then
+		echo -e "${CYAN}chntpw${NC} ${RED}does not exist${NC}. Stop."
+		terminate
+	fi
+}
+
 sys32_check() {
 	echo -e "\tRunning mount commands..."
 	mkdir $MOUNT_DEFAULT
@@ -121,6 +128,7 @@ Revised Nov 22 2018 by Furquan Ahmad
 "
 
 root_check
+chntpw_check
 
 echo -e "Available lookup-paths are:
 1. ${WHITE}$LOOKUP_PATH_1${NC}"
