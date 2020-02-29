@@ -25,12 +25,12 @@ ${LIGHT_CYAN}Thank you for using sam-helper!${NC}"
 
 readln() {
 	echo -n "$1"
-	read std_in
+	read -r std_in
 }
 
 readlne() {
 	echo -ne "$1"
-	read std_in
+	read -r std_in
 }
 
 root_check() {
@@ -117,7 +117,7 @@ readlne "+----------------------------------------------------------------------
 
 > "
 
-if [ $std_in != "YES" ]; then
+if [ "$std_in" != "YES" ]; then
 	terminate
 fi
 
@@ -144,7 +144,7 @@ if [ "$?" = 1 ]; then
 	readln "System32 was not found in any of the lookup devices. Enter one manually? (Y/N) "
 	if [ "$std_in" = "Y" ]; then
 		readln "Enter the device path (/dev/xxx): "
-		sys32_check $std_in
+		sys32_check "$std_in"
 		if [ "$?" = 1 ]; then
 			err_sys32_missing
 		fi
@@ -170,8 +170,7 @@ Unmount $LOOKUP_DEFAULT.."
 	terminate
 fi
 
-cd config > /dev/null
-if [ ! "$?" = 0 ]; then
+if cd config > /dev/null; then
 	pwd
 	echo "
 Error: We were unable to find the config directory."
@@ -188,14 +187,14 @@ Error: We were unable to find the SAM file. The SAM file is a single file withou
 "
 	chntpw -i $std_in
 else
-	echo -e "${LIGHT_GREEN}SAM file found${NC} at ${LIGHT_BLUE}`pwd`/SAM${NC}."
+	echo -e "${LIGHT_GREEN}SAM file found${NC} at ${LIGHT_BLUE}$(pwd)/SAM${NC}."
 	echo "Running chntpw...
 "
 	chntpw -i SAM
 fi
 cd ~
 echo "Unmounting $LOOKUP_DEFAULT..."
-umount $LOOKUP_DEFAULT
+umount "$LOOKUP_DEFAULT"
 rmdir $MOUNT_DEFAULT
 
 terminate
