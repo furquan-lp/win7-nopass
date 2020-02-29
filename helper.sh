@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # SAM Helper script; Written by Furquan Ahmad
-# Will run under any Linux/Unix(s) running any kind of bash
-# compatible shell.
+# Will run under any Linux/Unix(s) running any kind of bash-compatible
+# shell.
+
+# Third revision and git repo: Feb 29 2020
 
 # Global Variables/Constants:
 source def_color.sh # load color constants
@@ -93,8 +95,6 @@ Lookup path $path"
 	echo -e "File hierarchy dumped to ${LIGHT_GREEN}./HIERDUMP${NC}."
 }
 
-
-
 # Errors
 err_sys32_missing() {
 	echo -e "${RED}System32 not found on system${NC}. Stop."
@@ -120,8 +120,7 @@ readlne "+----------------------------------------------------------------------
 +----------------------------------------------------------------------------+
 
 > "
-
-if [ "$std_in" != "YES" ]; then
+if [ "$std_in" != "YES" ] && [ "$std_in" != "yes" ]; then
 	exit_normal
 fi
 
@@ -138,9 +137,7 @@ echo "Available lookup-paths are:"
 count=1
 for path in $LOOKUP_PATH_1 $LOOKUP_PATH_2 $LOOKUP_PATH_3 $LOOKUP_PATH_X; do
 	echo -e "$count.${WHITE}$path${NC}"
-	if check_system32 $path; then
-		_check_sys32=true
-	fi
+	check_system32 $path
 	count=$((count+1))
 done
 
@@ -196,6 +193,7 @@ else
 "
 	chntpw -i SAM
 fi
+
 cd ~
 echo "Unmounting $LOOKUP_DEFAULT..."
 umount "$LOOKUP_DEFAULT"
