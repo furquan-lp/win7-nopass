@@ -28,6 +28,11 @@ readln() {
 	read std_in
 }
 
+readlne() {
+	echo -ne "$1"
+	read std_in
+}
+
 root_check() {
 	if [ ! "$EUID" = 0 ]; then
 		echo -e "${RED}User is not root${NC}. Stop."
@@ -71,7 +76,7 @@ Lookup path $path"
 		echo -e "Unmount $path..."
 		umount "$path"
 	done
-	
+
 	echo "Finishing up..."
 	rmdir "$MOUNT_DEFAULT"
 	echo -e "File hierarchy dumped to ${LIGHT_GREEN}./HIERDUMP${NC}."
@@ -93,27 +98,26 @@ Do you wish to see a detailed diagnosis? (Y/N) "
 }
 
 # Main code
-readln '
-+----------------------------------------------------------------+
-|WARNING: Improper usage of this script may damage your system or|
-|render it unusable. Proceed with caution. The author(s) of this |
-|script will NOT be liable for any damages incurred through the  |
-|usage of this script.                                           |
-|                                                                |
-|Are you sure you want to run this script?                       |
-|                     [YES]             [NO]                     |
-+----------------------------------------------------------------+
+clear
+readlne "+----------------------------------------------------------------------------+
+|${RED}WARNING${NC}: Improper usage of this script may damage your system or render it  |
+|unusable. Proceed with caution. The author(s) of this script will NOT be    |
+|liable for any damages incurred through the use of this script.             |
+|                                                                            |
+|Are you sure you want to run this script?                                   |
+|                          ${LIGHT_BLUE}[YES]${NC}                ${LIGHT_RED}[NO]${NC}                         |
++----------------------------------------------------------------------------+
 
-> '
+> "
 
-if [[ ( "$std_in" != "YES" ) || ( "$std_in" != "yes" ) ]]; then
+if [ $std_in != "YES" ]; then
 	terminate
 fi
 
 clear
 echo "chntpw/interactive-mount and helper script
 Written April 17 2016; Ahmad, Furquan
-Edited Nov 22 2018 by Furquan Ahmad
+Revised Nov 22 2018 by Furquan Ahmad
 "
 
 root_check
