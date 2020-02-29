@@ -8,6 +8,7 @@
 source def_color.sh # load color constants
 
 std_in=""
+count=0
 
 LOOKUP_PATH_1="/dev/sda2" # <-- is the lookup path by default
 LOOKUP_PATH_2="/dev/sda3"
@@ -17,7 +18,7 @@ LOOKUP_DEFAULT=$LOOKUP_PATH_1 # stores the default lookup path
 MOUNT_DEFAULT="/mnt/sda"
 
 # Functions:
-terminate() {
+exit_normal() {
 	echo -e "
 ${LIGHT_CYAN}Thank you for using sam-helper!${NC}"
 	exit
@@ -33,21 +34,21 @@ readlne() {
 	read -r std_in
 }
 
-root_check() {
+check_root() {
 	if [ ! "$EUID" = 0 ]; then
 		echo -e "${RED}User is not root${NC}. Stop."
-		terminate
+		exit_normal
 	fi
 }
 
-chntpw_check() {
+check_chntpw() {
 	if [ ! $(command -v chntpw) ]; then
 		echo -e "${CYAN}chntpw${NC} ${RED}does not exist${NC}. Stop."
-		terminate
+		exit_normal
 	fi
 }
 
-sys32_check() {
+check_system32() {
 	echo -e "\tRunning mount commands..."
 	mkdir $MOUNT_DEFAULT
 	mount "$1" $MOUNT_DEFAULT
@@ -101,7 +102,7 @@ Do you wish to see a detailed diagnosis? (Y/N) "
 	fi
 	echo -e "\nExitting...
 "
-	terminate
+	exit_normal
 }
 
 # Main code
@@ -118,7 +119,7 @@ readlne "+----------------------------------------------------------------------
 > "
 
 if [ "$std_in" != "YES" ]; then
-	terminate
+	exit_normal
 fi
 
 clear
@@ -127,24 +128,32 @@ Written April 17 2016; Ahmad, Furquan
 Revised Nov 22 2018 by Furquan Ahmad
 "
 
-root_check
-chntpw_check
+check_root
+#check_chntpw
 
-echo -e "Available lookup-paths are:
-1. ${WHITE}$LOOKUP_PATH_1${NC}"
-sys32_check $LOOKUP_PATH_1
-echo -e "2. ${WHITE}$LOOKUP_PATH_2${NC}"
-sys32_check $LOOKUP_PATH_2
-echo -e "3. ${WHITE}$LOOKUP_PATH_3${NC}"
-sys32_check $LOOKUP_PATH_3
-echo -e "4. ${WHITE}$LOOKUP_PATH_X${NC}"
-sys32_check $LOOKUP_PATH_X
+echo "Available lookup-paths are:"
+count=1
+for path in $LOOKUP_PATH_1 $LOOKUP_PATH_2 $LOOKUP_PATH_3 $LOOKUP_PATH_X; do
+	echo -e "$count.${WHITE}$path${NC}"
+	check_system32 $path
+	count=$((count+1))
+done
+
+#echo -e "Available lookup-paths are:
+#1. ${WHITE}$LOOKUP_PATH_1${NC}"
+#check_system32 $LOOKUP_PATH_1
+#echo -e "2. ${WHITE}$LOOKUP_PATH_2${NC}"
+#check_system32 $LOOKUP_PATH_2
+#echo -e "3. ${WHITE}$LOOKUP_PATH_3${NC}"
+#check_system32 $LOOKUP_PATH_3
+#echo -e "4. ${WHITE}$LOOKUP_PATH_X${NC}"
+#check_system32 $LOOKUP_PATH_X
 
 if [ "$?" = 1 ]; then
 	readln "System32 was not found in any of the lookup devices. Enter one manually? (Y/N) "
 	if [ "$std_in" = "Y" ]; then
 		readln "Enter the device path (/dev/xxx): "
-		sys32_check "$std_in"
+		check_system32 "$std_in"
 		if [ "$?" = 1 ]; then
 			err_sys32_missing
 		fi
@@ -167,7 +176,7 @@ Unmount $LOOKUP_DEFAULT.."
 	echo "Finishing up..."
 	rmdir "$MOUNT_DEFAULT"	
 	echo -e "Exitting..."
-	terminate
+	exit_normal
 fi
 
 if cd config > /dev/null; then
@@ -197,4 +206,4 @@ echo "Unmounting $LOOKUP_DEFAULT..."
 umount "$LOOKUP_DEFAULT"
 rmdir $MOUNT_DEFAULT
 
-terminate
+exit_normal
