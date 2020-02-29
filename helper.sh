@@ -44,7 +44,7 @@ check_root() {
 }
 
 check_chntpw() {
-	if [ ! $(command -v chntpw) ]; then
+	if [ ! $(command -v chntpw > /dev/null) ]; then
 		echo -e "${CYAN}chntpw${NC} ${RED}does not exist${NC}. Stop."
 		exit_normal
 	fi
