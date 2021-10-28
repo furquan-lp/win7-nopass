@@ -1,5 +1,5 @@
-# sam-helper
-This is a simple interactive script to help guide the user in Windows password-recovery using `chntpw`.
+# win7-nopass
+This is an interactive script to help guide the user in Windows password-recovery using `chntpw`.
 
 ![](screenshot.png)
 
